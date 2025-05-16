@@ -3,6 +3,16 @@ import xml.etree.ElementTree as ET
 from collections import deque
 
 def compareTrees(Lfile, Rfile) -> float:
+  """
+  Compare two XML trees and return a score based on their structure and branching nodes.
+  The score is calculated based on the depth and complexity of the trees.
+  
+  Parameters:
+    Lfile (str): Path to the first XML file.
+    Rfile (str): Path to the second XML file.
+  Returns:
+    float: A score representing the similarity between the two trees.
+  """
   Ltree = ET.parse(Lfile)
   Rtree = ET.parse(Rfile)
   LpathsArr = parseTree(Ltree)
@@ -11,6 +21,9 @@ def compareTrees(Lfile, Rfile) -> float:
   return score
 
 def parseTree(tree: ET.ElementTree):
+  """
+  
+  """
   root = tree.getroot()
   childNodes = deque()
   childNodes.append([root, []])
@@ -23,7 +36,7 @@ def parseTree(tree: ET.ElementTree):
     
     curNode, curPath = copy.deepcopy(childNodes.pop())
     curPath.append(curNode)
-    if len(list(curNode)) == 0: #No children
+    if len(list(curNode)) == 0: # No children
       pathsArr.append(curPath)
       continue
     
@@ -78,7 +91,7 @@ def scoreTree(LpathsArr, RpathsArr) -> float:
   branchScoresArr = []
   for Rpath in RpathsArr:
     bestBranchScore = 0
-    matchingWeight = 1 #Might not even be necessary but clean
+    matchingWeight = 1 # Might not even be necessary but clean
     for Lpath in LpathsArr:
       branchScore, weight = getBranchInfo(Lpath, Rpath)
       if branchScore > bestBranchScore:
@@ -93,21 +106,21 @@ def scoreTree(LpathsArr, RpathsArr) -> float:
   maxSize = max(Lsize, Rsize)
   complexityScore = minSize / maxSize
   
-  #Weight is "hardcoded" here
+  # Weight is "hardcoded" here
   depthWeight = 1 - depthScore
   complexityWeight = depthScore
   return complexityScore * complexityWeight + depthScore * depthWeight
 
 def getBranchInfo(Lpath, Rpath):
-  bestDepth = longestContigSubseqCount(Lpath[1:], Rpath[1:]) #Skip math
-  score = bestDepth/(len(Rpath) - 1) #-1 to account for math, present in every branch.
+  bestDepth = longestContigSubseqCount(Lpath[1:], Rpath[1:]) # Skip math
+  score = bestDepth/(len(Rpath) - 1) # -1 to account for math, present in every branch.
   LbranchingCounts, RbranchingCounts = countBranching(Lpath, Rpath) 
   weight = getWeight(LbranchingCounts, RbranchingCounts)  
   return score, weight
 
 def longestContigSubseqCount(Lpath, Rpath):
   m, n = len(Lpath), len(Rpath)
-  table = [[0] * (n + 1) for _ in range(m + 1)] #Create and fill with 0
+  table = [[0] * (n + 1) for _ in range(m + 1)] # Create and fill with 0
   bestDepth = 0
 
   for i in range(1, m + 1):
@@ -122,7 +135,7 @@ def longestContigSubseqCount(Lpath, Rpath):
 def countBranching(Lpath, Rpath):
   LbranchingCounts = {}
   RbranchingCounts = {}
-  #Need to be specific because <mo> is in <mover>
+  # yNeed to be specific because <mo> is in <mover>
   for branchingNode in BRANCHING_NODES:
     for Lnode in Lpath:
       if isinstance(Lnode, int):
@@ -161,7 +174,7 @@ def getWeight(LbranchingNodes, RbranchingNodes):
     weight = weight * (keyToWeight[key] ** difference)
   return weight
 
-#Testing stuff
+# Testing stuff
 def printTree(tree):
   root = tree.getroot()
   for node in root.iter():
