@@ -22,12 +22,13 @@ def compareTrees(Lfile, Rfile) -> float:
 
 def parseTree(tree: ET.ElementTree):
   """
-  Convert an ElementTree into an array in some way that I have yet to figure out.
+  Sketches out an XML file (in our case specifically MathML) in a tree structure.
+  Only holds on to tags and drops the actual values contained in them.
 
   Parameters:
     tree (ET.ElementTree): the MathML file encoded into tree format
   Returns:
-    array: the array representation of the converted MathML file
+    array: the tree sketch representation of the XML file
   """
   root = tree.getroot()
   childNodes = deque()
@@ -58,6 +59,7 @@ def parseTree(tree: ET.ElementTree):
   pathsArr = convertPathToString(pathsArr)
   return pathsArr
 
+# these are common MathML tags that we've decided have a significant effect on the formula
 BRANCHING_NODES = [
   "mover",
   "munder",
