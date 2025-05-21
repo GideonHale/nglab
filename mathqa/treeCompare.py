@@ -5,7 +5,7 @@ from collections import deque
 def compareTrees(Lfile, Rfile) -> float:
   """
   Compare two XML trees and return a score based on their structure and branching nodes.
-  The score is calculated based on the depth and complexity of the trees.
+  The score is calculated based on the depth and complexity of the trees by way of scoreTree().
   
   Parameters:
     Lfile (str): Path to the first XML file.
@@ -22,7 +22,12 @@ def compareTrees(Lfile, Rfile) -> float:
 
 def parseTree(tree: ET.ElementTree):
   """
-  
+  Convert an ElementTree into an array in some way that I have yet to figure out.
+
+  Parameters:
+    tree (ET.ElementTree): the MathML file encoded into tree format
+  Returns:
+    array: the array representation of the converted MathML file
   """
   root = tree.getroot()
   childNodes = deque()
